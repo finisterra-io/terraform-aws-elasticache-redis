@@ -30,40 +30,26 @@ locals {
   }
 }
 
-module "aws_security_group" {
-  source  = "cloudposse/security-group/aws"
-  version = "1.0.1"
-
-  enabled = local.create_security_group
-
-  allow_all_egress    = local.allow_all_egress
-  security_group_name = var.security_group_name
-  rules_map           = local.sg_rules
-  rule_matrix = [{
-    key                       = "in"
-    source_security_group_ids = local.allowed_security_group_ids
-    cidr_blocks               = var.allowed_cidr_blocks
-    rules = [{
-      key         = "in"
-      type        = "ingress"
-      from_port   = var.port
-      to_port     = var.port
-      protocol    = "tcp"
-      description = "Selectively allow inbound traffic"
-    }]
-  }]
-
-  vpc_id = var.vpc_id
-
-  security_group_description = local.security_group_description
-
-  create_before_destroy = var.security_group_create_before_destroy
-
-  security_group_create_timeout = var.security_group_create_timeout
-  security_group_delete_timeout = var.security_group_delete_timeout
-
-  context = module.this.context
+resource "aws_security_group" "default" {
+  count       = module.this.enabled && local.create_security_group ? 1 : 0
+  name        = var.security_group_name
+  description = var.security_group_description
+  vpc_id      = var.vpc_id
+  tags        = var.security_group_tags
 }
+
+resource "aws_security_group_rule" "default" {
+  for_each = var.security_group_rules
+
+  type              = each.value.type
+  description       = try(each.value.description, "")
+  from_port         = try(each.value.from_port, -1)
+  to_port           = try(each.value.to_port, -1)
+  protocol          = each.value.protocol
+  cidr_blocks       = each.value.cidr_blocks
+  security_group_id = each.value.security_group_id
+}
+
 
 locals {
   elasticache_subnet_group_name = var.elasticache_subnet_group_name != "" ? var.elasticache_subnet_group_name : join("", aws_elasticache_subnet_group.default[*].name)
@@ -81,16 +67,16 @@ locals {
 }
 
 resource "aws_elasticache_subnet_group" "default" {
-  count       = module.this.enabled && var.elasticache_subnet_group_name == "" && length(var.subnets) > 0 ? 1 : 0
-  name        = module.this.id
-  description = "Elasticache subnet group for ${module.this.id}"
+  count       = module.this.enabled && var.create_subnet_group_name ? 1 : 0
+  name        = var.subnet_group_name
+  description = var.subnet_group_description != null ? var.subnet_group_description : "Elasticache subnet group for ${module.this.id}"
   subnet_ids  = var.subnets
-  tags        = module.this.tags
+  tags        = var.subnet_group_tags
 }
 
 resource "aws_elasticache_parameter_group" "default" {
-  count       = module.this.enabled ? 1 : 0
-  name        = module.this.id
+  count       = module.this.enabled && var.create_parameter_group_name ? 1 : 0
+  name        = var.parameter_group_name
   description = var.parameter_group_description != null ? var.parameter_group_description : "Elasticache parameter group for ${module.this.id}"
   family      = var.family
 
@@ -102,7 +88,7 @@ resource "aws_elasticache_parameter_group" "default" {
     }
   }
 
-  tags = module.this.tags
+  tags = var.parameter_group_tags
 
   # Ignore changes to the description since it will try to recreate the resource
   lifecycle {
@@ -119,17 +105,17 @@ resource "aws_elasticache_replication_group" "default" {
   replication_group_id        = var.replication_group_id == "" ? module.this.id : var.replication_group_id
   description                 = coalesce(var.description, module.this.id)
   node_type                   = var.instance_type
-  num_cache_clusters          = var.cluster_mode_enabled ? null : var.cluster_size
+  num_cache_clusters          = var.num_cache_clusters
   port                        = var.port
-  parameter_group_name        = join("", aws_elasticache_parameter_group.default[*].name)
-  preferred_cache_cluster_azs = length(var.availability_zones) == 0 ? null : [for n in range(0, var.cluster_size) : element(var.availability_zones, n)]
-  automatic_failover_enabled  = var.cluster_mode_enabled ? true : var.automatic_failover_enabled
+  parameter_group_name        = var.parameter_group_name
+  preferred_cache_cluster_azs = var.preferred_cache_cluster_azs
+  automatic_failover_enabled  = var.automatic_failover_enabled
   multi_az_enabled            = var.multi_az_enabled
-  subnet_group_name           = local.elasticache_subnet_group_name
+  subnet_group_name           = var.subnet_group_name
   # It would be nice to remove null or duplicate security group IDs, if there are any, using `compact`,
   # but that causes problems, and having duplicates does not seem to cause problems.
   # See https://github.com/hashicorp/terraform/issues/29799
-  security_group_ids         = local.create_security_group ? concat(local.associated_security_group_ids, [module.aws_security_group.id]) : local.associated_security_group_ids
+  security_group_ids         = [join("", aws_security_group.default[*].id)]
   maintenance_window         = var.maintenance_window
   notification_topic_arn     = var.notification_topic_arn
   engine_version             = var.engine_version
@@ -214,15 +200,3 @@ resource "aws_cloudwatch_metric_alarm" "cache_memory" {
   tags = module.this.tags
 }
 
-module "dns" {
-  source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.2"
-
-  enabled  = module.this.enabled && length(var.zone_id) > 0 ? true : false
-  dns_name = var.dns_subdomain != "" ? var.dns_subdomain : module.this.id
-  ttl      = 60
-  zone_id  = try(var.zone_id[0], tostring(var.zone_id), "")
-  records  = var.cluster_mode_enabled ? [join("", aws_elasticache_replication_group.default[*].configuration_endpoint_address)] : [join("", aws_elasticache_replication_group.default[*].primary_endpoint_address)]
-
-  context = module.this.context
-}

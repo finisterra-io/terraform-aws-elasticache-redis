@@ -254,3 +254,58 @@ variable "auto_minor_version_upgrade" {
   default     = null
   description = "Specifies whether minor version engine upgrades will be applied automatically to the underlying Cache Cluster instances during the maintenance window. Only supported if the engine version is 6 or higher."
 }
+
+variable "create_parameter_group_name" {
+  type        = bool
+  default     = false
+  description = "Create a parameter group with the name specified in `parameter_group_name`"
+}
+
+variable "parameter_group_name" {
+  type        = string
+  default     = null
+  description = "Name of the parameter group to be associated with the replication group"
+}
+
+variable "parameter_group_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Tags to apply to the parameter group"
+}
+
+variable "create_subnet_group_name" {
+  type        = bool
+  default     = false
+  description = "Create a subnet group with the name specified in `subnet_group_name`"
+}
+
+variable "subnet_group_name" {
+  type        = string
+  default     = null
+  description = "Name of the subnet group to be associated with the replication group"
+}
+
+variable "subnet_group_description" {
+  type        = string
+  default     = null
+  description = "Description of the subnet group to be associated with the replication group"
+}
+
+variable "subnet_group_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Tags to apply to the subnet group"
+}
+
+variable "num_cache_clusters" {
+  type        = number
+  default     = 1
+  description = "Number of cache clusters (nodes) in the replication group. Changing this number will trigger an online resizing operation before other settings modifications"
+}
+
+
+variable "preferred_cache_cluster_azs" {
+  type        = list(string)
+  default     = null
+  description = "List of Availability Zones where cache cluster will be created"
+}
