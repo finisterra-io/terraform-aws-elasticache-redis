@@ -33,10 +33,10 @@ output "member_clusters" {
   description = "Redis cluster members"
 }
 
-output "host" {
-  value       = module.dns.hostname
-  description = "Redis hostname"
-}
+# output "host" {
+#   value       = module.dns.hostname
+#   description = "Redis hostname"
+# }
 
 output "arn" {
   value       = join("", aws_elasticache_replication_group.default[*].arn)
