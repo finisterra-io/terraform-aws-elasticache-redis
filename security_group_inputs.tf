@@ -38,15 +38,15 @@ locals {
 }
 
 
-variable "security_group_name" {
-  type        = list(string)
-  default     = []
-  description = <<-EOT
-    The name to assign to the created security group. Must be unique within the VPC.
-    If not provided, will be derived from the `null-label.context` passed in.
-    If `create_before_destroy` is true, will be used as a name prefix.
-    EOT
-}
+# variable "security_group_name" {
+#   type        = list(string)
+#   default     = []
+#   description = <<-EOT
+#     The name to assign to the created security group. Must be unique within the VPC.
+#     If not provided, will be derived from the `null-label.context` passed in.
+#     If `create_before_destroy` is true, will be used as a name prefix.
+#     EOT
+# }
 
 variable "security_group_description" {
   type        = string
@@ -110,3 +110,24 @@ variable "additional_security_group_rules" {
     To get more info see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule .
     EOT
 }
+
+
+variable "security_group_name" {
+  type        = string
+  default     = null
+  description = "Name of the security group to be associated with the replication group"
+}
+
+
+variable "security_group_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Tags to apply to the security group"
+}
+
+variable "security_group_rules" {
+  type        = list(map(any))
+  default     = []
+  description = "List of maps of Security Group rules to create"
+}
+
