@@ -133,7 +133,7 @@ resource "aws_elasticache_replication_group" "default" {
   snapshot_window            = var.snapshot_window
   snapshot_retention_limit   = var.snapshot_retention_limit
   final_snapshot_identifier  = var.final_snapshot_identifier
-  apply_immediately          = var.apply_immediately
+  # apply_immediately          = var.apply_immediately
   data_tiering_enabled       = var.data_tiering_enabled
   auto_minor_version_upgrade = var.auto_minor_version_upgrade
 
