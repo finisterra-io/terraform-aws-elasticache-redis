@@ -139,3 +139,9 @@ variable "security_group_rules" {
     to_port                = optional(number)
   }))
 }
+
+variable "security_group_names" {
+  description = "List of security group names"
+  type        = list(string)
+  default     = []
+}
