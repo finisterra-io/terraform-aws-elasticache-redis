@@ -39,7 +39,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "default" {
-  for_each = var.security_group_rules
+  for_each = local.create_security_group ? var.security_group_rules : {}
 
   type              = each.value.type
   description       = try(each.value.description, "")
