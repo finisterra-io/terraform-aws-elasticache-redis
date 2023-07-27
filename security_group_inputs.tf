@@ -121,13 +121,21 @@ variable "security_group_name" {
 
 variable "security_group_tags" {
   type        = map(string)
+  description = "Additional tags for the security group to create for the DocumentDB cluster"
   default     = {}
-  description = "Tags to apply to the security group"
 }
 
 variable "security_group_rules" {
-  type        = list(map(any))
-  default     = []
-  description = "List of maps of Security Group rules to create"
+  description = "Map of security group rules"
+  type = map(object({
+    cidr_blocks            = list(string)
+    id                     = string
+    protocol               = string
+    security_group_id      = string
+    security_group_rule_id = string
+    type                   = string
+    description            = optional(string)
+    from_port              = optional(number)
+    to_port                = optional(number)
+  }))
 }
-
