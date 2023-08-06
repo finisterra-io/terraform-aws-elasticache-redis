@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "default" {
   to_port           = try(each.value.to_port, -1)
   protocol          = each.value.protocol
   cidr_blocks       = each.value.cidr_blocks
-  security_group_id = each.value.security_group_id
+  security_group_id = aws_security_group.default[0].id
 }
 
 
@@ -120,7 +120,7 @@ resource "aws_elasticache_replication_group" "default" {
   # It would be nice to remove null or duplicate security group IDs, if there are any, using `compact`,
   # but that causes problems, and having duplicates does not seem to cause problems.
   # See https://github.com/hashicorp/terraform/issues/29799
-  security_group_ids         = [join("", data.aws_security_group.default[*].id)]
+  security_group_ids         = [join("", aws_security_group.default[*].id)]
   security_group_names       = var.security_group_names
   maintenance_window         = var.maintenance_window
   notification_topic_arn     = var.notification_topic_arn
