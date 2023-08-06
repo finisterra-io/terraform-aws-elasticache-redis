@@ -34,7 +34,7 @@ resource "aws_security_group" "default" {
   count       = module.this.enabled && local.create_security_group ? 1 : 0
   name        = var.security_group_name
   description = var.security_group_description
-  vpc_id      = var.vpc_id
+  vpc_id      = data.aws_vpc.default[0].id
   tags        = var.security_group_tags
 }
 
@@ -70,7 +70,7 @@ resource "aws_elasticache_subnet_group" "default" {
   count       = module.this.enabled && var.create_subnet_group_name ? 1 : 0
   name        = var.subnet_group_name
   description = var.subnet_group_description != null ? var.subnet_group_description : "Elasticache subnet group for ${module.this.id}"
-  subnet_ids  = var.subnets
+  subnet_ids  = data.aws_subnet.default[*].id
   tags        = var.subnet_group_tags
 }
 

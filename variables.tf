@@ -1,14 +1,3 @@
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID"
-  default     = null
-}
-
-variable "subnets" {
-  type        = list(string)
-  description = "Subnet IDs"
-  default     = []
-}
 
 variable "elasticache_subnet_group_name" {
   type        = string
@@ -312,3 +301,14 @@ variable "preferred_cache_cluster_azs" {
 }
 
 
+variable "vpc_name" {
+  type        = string
+  default     = null
+  description = "Name of the VPC to create the security group in"
+}
+
+variable "subnet_names" {
+  type        = list(string)
+  default     = null
+  description = "List of subnet names to create the security group in"
+}
