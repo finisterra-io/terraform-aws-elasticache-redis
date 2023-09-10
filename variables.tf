@@ -307,8 +307,20 @@ variable "vpc_name" {
   description = "Name of the VPC to create the security group in"
 }
 
+variable "vpc_id" {
+  type        = string
+  default     = null
+  description = "ID of the VPC to create the security group in"
+}
+
 variable "subnet_names" {
   type        = list(string)
   default     = null
   description = "List of subnet names to create the security group in"
+}
+
+variable "subnet_ids" {
+  type        = list(string)
+  default     = null
+  description = "List of subnet IDs to create the security group in"
 }
