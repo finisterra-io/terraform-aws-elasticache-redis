@@ -115,7 +115,7 @@ resource "aws_elasticache_replication_group" "default" {
 
   auth_token                  = var.transit_encryption_enabled ? var.auth_token : null
   replication_group_id        = var.replication_group_id == "" ? module.this.id : var.replication_group_id
-  description                 = var.description, module.this.id
+  description                 = var.description
   node_type                   = var.instance_type
   num_cache_clusters          = var.num_cache_clusters
   port                        = var.port
