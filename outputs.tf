@@ -18,10 +18,10 @@ output "port" {
   description = "Redis port"
 }
 
-output "endpoint" {
-  value       = var.cluster_mode_enabled ? join("", try(aws_elasticache_replication_group.default[*].configuration_endpoint_address, [])) : join("", try(aws_elasticache_replication_group.default[*].primary_endpoint_address, []))
-  description = "Redis primary or configuration endpoint, whichever is appropriate for the given cluster mode"
-}
+# output "endpoint" {
+#   value       = var.cluster_mode_enabled ? join("", aws_elasticache_replication_group.default[*].configuration_endpoint_address) : join("", aws_elasticache_replication_group.default[*].primary_endpoint_address)
+#   description = "Redis primary or configuration endpoint, whichever is appropriate for the given cluster mode"
+# }
 
 output "reader_endpoint_address" {
   value       = join("", compact(aws_elasticache_replication_group.default[*].reader_endpoint_address))
