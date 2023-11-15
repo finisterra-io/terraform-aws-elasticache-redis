@@ -107,7 +107,8 @@ resource "aws_elasticache_parameter_group" "default" {
 data "aws_security_group" "default" {
   for_each = module.this.enabled ? toset(var.security_groups) : []
 
-  name = each.key
+  name   = each.key
+  vpc_id = var.vpc_name != null ? data.aws_vpc.default[0].id : var.vpc_id
 }
 
 # data "aws_security_group" "default" {
