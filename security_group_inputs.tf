@@ -143,3 +143,9 @@ variable "security_group_names" {
   type        = list(string)
   default     = []
 }
+
+variable "security_groups" {
+  description = "List of security group names"
+  type        = list(string)
+  default     = []
+}

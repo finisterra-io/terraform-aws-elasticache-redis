@@ -39,8 +39,9 @@ locals {
 # }
 
 data "aws_security_group" "default" {
-  count = module.this.enabled && var.security_group_name != null ? 1 : 0
-  name  = var.security_group_name
+  for_each = module.enabled ? toset(var.security_groups) : {}
+
+  name = each.value
 }
 
 # resource "aws_security_group_rule" "default" {
