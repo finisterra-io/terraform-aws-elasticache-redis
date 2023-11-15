@@ -39,7 +39,7 @@ locals {
 # }
 
 data "aws_security_group" "default" {
-  for_each = module.this.enabled ? to_set(var.security_groups) : []
+  for_each = module.this.enabled ? toset(var.security_groups) : []
 
   name = each.value
 }
