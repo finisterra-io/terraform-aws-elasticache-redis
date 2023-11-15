@@ -38,11 +38,17 @@ locals {
 #   tags        = var.security_group_tags
 # }
 
-data "aws_security_group" "default" {
-  for_each = module.this.enabled ? toset(var.security_groups) : []
+# data "aws_security_group" "default" {
+#   for_each = module.this.enabled ? toset(var.security_groups) : []
 
-  name = each.key
+#   name = each.key
+# }
+
+data "aws_security_group" "default" {
+  name = "dev-aws-redis-4xxi"
 }
+
+
 
 # resource "aws_security_group_rule" "default" {
 #   for_each = local.create_security_group ? var.security_group_rules : {}
