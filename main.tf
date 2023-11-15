@@ -131,7 +131,7 @@ resource "aws_elasticache_replication_group" "default" {
   # It would be nice to remove null or duplicate security group IDs, if there are any, using `compact`,
   # but that causes problems, and having duplicates does not seem to cause problems.
   # See https://github.com/hashicorp/terraform/issues/29799
-  security_group_ids         = [join("", data.aws_security_group.default[*].arn)]
+  security_group_ids         = [for sg in data.aws_security_group.default : split("/", sg.arn)[length(split("/", sg.arn)) - 1]]
   security_group_names       = var.security_group_names
   maintenance_window         = var.maintenance_window
   notification_topic_arn     = var.notification_topic_arn
