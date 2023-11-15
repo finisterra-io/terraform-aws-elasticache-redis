@@ -4,7 +4,7 @@
 
 variable "create_security_group" {
   type        = bool
-  default     = true
+  default     = false
   description = "Set `true` to create and configure a new security group. If false, `associated_security_group_ids` must be provided."
 }
 
@@ -135,6 +135,7 @@ variable "security_group_rules" {
     from_port   = optional(number)
     to_port     = optional(number)
   }))
+  default = {}
 }
 
 variable "security_group_names" {
