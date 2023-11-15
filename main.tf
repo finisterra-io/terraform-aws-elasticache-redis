@@ -104,15 +104,15 @@ resource "aws_elasticache_parameter_group" "default" {
 #   name  = var.security_group_name
 # }
 
-# data "aws_security_group" "default" {
-#   for_each = module.this.enabled ? toset(var.security_groups) : []
-
-#   name = each.key
-# }
-
 data "aws_security_group" "default" {
-  name = "dev-redis-allow-ec2"
+  for_each = module.this.enabled ? toset(var.security_groups) : []
+
+  name = each.key
 }
+
+# data "aws_security_group" "default" {
+#   name = "dev-redis-allow-ec2"
+# }
 
 resource "aws_elasticache_replication_group" "default" {
   count = module.this.enabled ? 1 : 0
