@@ -142,4 +142,3 @@ resource "aws_cloudwatch_metric_alarm" "cache_memory" {
 
   tags = module.this.tags
 }
-
