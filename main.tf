@@ -2,7 +2,7 @@
 # Security Group Resources
 #
 locals {
-  enabled = module.this.enabled
+  enabled = var.enabled
 
   legacy_egress_rule = local.use_legacy_egress ? {
     key         = "legacy-egress"
@@ -45,7 +45,7 @@ locals {
 }
 
 resource "aws_elasticache_replication_group" "default" {
-  count = module.this.enabled ? 1 : 0
+  count = var.enabled ? 1 : 0
 
   auth_token                  = var.transit_encryption_enabled ? var.auth_token : null
   replication_group_id        = var.replication_group_id == "" ? module.this.id : var.replication_group_id
@@ -96,7 +96,7 @@ resource "aws_elasticache_replication_group" "default" {
 # CloudWatch Resources
 #
 resource "aws_cloudwatch_metric_alarm" "cache_cpu" {
-  count               = module.this.enabled && var.cloudwatch_metric_alarms_enabled ? local.member_clusters_count : 0
+  count               = var.enabled && var.cloudwatch_metric_alarms_enabled ? local.member_clusters_count : 0
   alarm_name          = "${element(tolist(aws_elasticache_replication_group.default[0].member_clusters), count.index)}-cpu-utilization"
   alarm_description   = "Redis cluster CPU utilization"
   comparison_operator = "GreaterThanThreshold"
@@ -120,7 +120,7 @@ resource "aws_cloudwatch_metric_alarm" "cache_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cache_memory" {
-  count               = module.this.enabled && var.cloudwatch_metric_alarms_enabled ? local.member_clusters_count : 0
+  count               = var.enabled && var.cloudwatch_metric_alarms_enabled ? local.member_clusters_count : 0
   alarm_name          = "${element(tolist(aws_elasticache_replication_group.default[0].member_clusters), count.index)}-freeable-memory"
   alarm_description   = "Redis cluster freeable memory"
   comparison_operator = "LessThanThreshold"
