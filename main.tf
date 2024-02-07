@@ -1,32 +1,3 @@
-#
-# Security Group Resources
-#
-locals {
-  enabled = var.enabled
-
-  legacy_egress_rule = local.use_legacy_egress ? {
-    key         = "legacy-egress"
-    type        = "egress"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.egress_cidr_blocks
-    description = "Allow outbound traffic to existing CIDR blocks"
-  } : null
-
-  legacy_cidr_ingress_rule = length(var.allowed_cidr_blocks) == 0 ? null : {
-    key         = "legacy-cidr-ingress"
-    type        = "ingress"
-    from_port   = var.port
-    to_port     = var.port
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
-    description = "Allow inbound traffic from CIDR blocks"
-  }
-
-}
-
-
 locals {
 
   # if !cluster, then node_count = replica cluster_size, if cluster then node_count = shard*(replica + 1)
