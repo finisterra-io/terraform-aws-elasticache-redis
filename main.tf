@@ -24,10 +24,6 @@ locals {
     description = "Allow inbound traffic from CIDR blocks"
   }
 
-  sg_rules = {
-    legacy = merge(local.legacy_egress_rule, local.legacy_cidr_ingress_rule),
-    extra  = var.additional_security_group_rules
-  }
 }
 
 
@@ -85,7 +81,7 @@ resource "aws_elasticache_replication_group" "default" {
     }
   }
 
-  tags = module.this.tags
+  tags = var.tags
 
   num_node_groups         = var.cluster_mode_enabled ? var.cluster_mode_num_node_groups : null
   replicas_per_node_group = var.cluster_mode_enabled ? var.cluster_mode_replicas_per_node_group : null
@@ -116,7 +112,7 @@ resource "aws_cloudwatch_metric_alarm" "cache_cpu" {
   ok_actions    = var.ok_actions
   depends_on    = [aws_elasticache_replication_group.default]
 
-  tags = module.this.tags
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "cache_memory" {
@@ -140,5 +136,5 @@ resource "aws_cloudwatch_metric_alarm" "cache_memory" {
   ok_actions    = var.ok_actions
   depends_on    = [aws_elasticache_replication_group.default]
 
-  tags = module.this.tags
+  tags = var.tags
 }
