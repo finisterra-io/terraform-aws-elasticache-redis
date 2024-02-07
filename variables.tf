@@ -215,6 +215,11 @@ variable "preferred_cache_cluster_azs" {
   description = "List of Availability Zones where cache cluster will be created"
 }
 
+variable "parameter_group_name" {
+  type        = string
+  default     = null
+  description = "Name of the parameter group to associate with the replication group"
+}
 
 variable "vpc_name" {
   type        = string
