@@ -4,12 +4,6 @@ variable "enabled" {
   default     = true
 }
 
-variable "elasticache_subnet_group_name" {
-  type        = string
-  description = "Subnet group name for the ElastiCache instance"
-  default     = ""
-}
-
 variable "maintenance_window" {
   type        = string
   default     = "wed:03:00-wed:04:00"
@@ -32,21 +26,6 @@ variable "instance_type" {
   type        = string
   default     = "cache.t2.micro"
   description = "Elastic cache instance type"
-}
-
-variable "family" {
-  type        = string
-  default     = "redis4.0"
-  description = "Redis family"
-}
-
-variable "parameter" {
-  type = list(object({
-    name  = string
-    value = string
-  }))
-  default     = []
-  description = "A list of Redis parameters to apply. Note that parameters may differ from one Redis family to another"
 }
 
 variable "engine_version" {
@@ -101,12 +80,6 @@ variable "ok_actions" {
   default     = []
 }
 
-variable "apply_immediately" {
-  type        = bool
-  default     = true
-  description = "Apply changes immediately"
-}
-
 variable "data_tiering_enabled" {
   type        = bool
   default     = false
@@ -123,28 +96,6 @@ variable "multi_az_enabled" {
   type        = bool
   default     = false
   description = "Multi AZ (Automatic Failover must also be enabled.  If Cluster Mode is enabled, Multi AZ is on by default, and this setting is ignored)"
-}
-
-variable "availability_zones" {
-  type        = list(string)
-  description = "Availability zone IDs"
-  default     = []
-}
-
-variable "zone_id" {
-  type        = any
-  default     = []
-  description = <<-EOT
-    Route53 DNS Zone ID as list of string (0 or 1 items). If empty, no custom DNS name will be published.
-    If the list contains a single Zone ID, a custom DNS name will be pulished in that zone.
-    Can also be a plain string, but that use is DEPRECATED because of Terraform issues.
-    EOT
-}
-
-variable "dns_subdomain" {
-  type        = string
-  default     = ""
-  description = "The subdomain to use for the CNAME record. If not provided then the CNAME record will use var.name."
 }
 
 variable "auth_token" {
@@ -220,12 +171,6 @@ variable "cloudwatch_metric_alarms_enabled" {
   default     = false
 }
 
-variable "parameter_group_description" {
-  type        = string
-  default     = null
-  description = "Managed by Terraform"
-}
-
 variable "log_delivery_configuration" {
   type        = list(map(any))
   default     = []
@@ -250,47 +195,12 @@ variable "auto_minor_version_upgrade" {
   description = "Specifies whether minor version engine upgrades will be applied automatically to the underlying Cache Cluster instances during the maintenance window. Only supported if the engine version is 6 or higher."
 }
 
-variable "create_parameter_group_name" {
-  type        = bool
-  default     = false
-  description = "Create a parameter group with the name specified in `parameter_group_name`"
-}
-
-variable "parameter_group_name" {
-  type        = string
-  default     = null
-  description = "Name of the parameter group to be associated with the replication group"
-}
-
-variable "parameter_group_tags" {
-  type        = map(string)
-  default     = {}
-  description = "Tags to apply to the parameter group"
-}
-
-variable "create_subnet_group_name" {
-  type        = bool
-  default     = false
-  description = "Create a subnet group with the name specified in `subnet_group_name`"
-}
-
 variable "subnet_group_name" {
   type        = string
   default     = null
   description = "Name of the subnet group to be associated with the replication group"
 }
 
-variable "subnet_group_description" {
-  type        = string
-  default     = null
-  description = "Description of the subnet group to be associated with the replication group"
-}
-
-variable "subnet_group_tags" {
-  type        = map(string)
-  default     = {}
-  description = "Tags to apply to the subnet group"
-}
 
 variable "num_cache_clusters" {
   type        = number
@@ -317,19 +227,6 @@ variable "vpc_id" {
   default     = null
   description = "ID of the VPC to create the security group in"
 }
-
-variable "subnet_names" {
-  type        = list(string)
-  default     = null
-  description = "List of subnet names to create the security group in"
-}
-
-variable "subnet_ids" {
-  type        = list(string)
-  default     = null
-  description = "List of subnet IDs to create the security group in"
-}
-
 
 variable "security_group_ids" {
   type        = list(string)
