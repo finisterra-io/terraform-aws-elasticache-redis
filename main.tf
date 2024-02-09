@@ -26,7 +26,6 @@ resource "aws_elasticache_replication_group" "default" {
   multi_az_enabled            = var.multi_az_enabled
   subnet_group_name           = var.subnet_group_name
   security_group_ids          = [for sg_id in var.security_group_ids : sg_id == "default" ? data.aws_security_group.default[0].id : sg_id]
-  security_group_names        = var.security_group_names
   maintenance_window          = var.maintenance_window
   notification_topic_arn      = var.notification_topic_arn
   engine_version              = var.engine_version
