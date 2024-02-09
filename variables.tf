@@ -244,10 +244,3 @@ variable "tags" {
   default     = {}
   description = "A map of tags to add to all resources"
 }
-
-
-variable "security_group_names" {
-  type        = list(string)
-  default     = null
-  description = "List of security group names to associate with the replication group"
-}
