@@ -59,7 +59,9 @@ resource "aws_elasticache_replication_group" "default" {
 
   lifecycle {
     ignore_changes = [
-      security_group_names
+      security_group_names,
+      auth_token_update_strategy,
+      notification_topic_arn
     ]
   }
 }
