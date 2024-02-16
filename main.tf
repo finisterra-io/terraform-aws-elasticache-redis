@@ -25,7 +25,7 @@ resource "aws_elasticache_replication_group" "default" {
   automatic_failover_enabled  = var.automatic_failover_enabled
   multi_az_enabled            = var.multi_az_enabled
   subnet_group_name           = var.subnet_group_name
-  security_group_ids          = [for sg_id in var.security_group_ids : sg_id == "default" ? data.aws_security_group.default[0].id : sg_id]
+  security_group_ids          = try([for sg_id in var.security_group_ids : sg_id == "default" ? data.aws_security_group.default[0].id : sg_id], [])
   maintenance_window          = var.maintenance_window
   notification_topic_arn      = var.notification_topic_arn
   engine_version              = var.engine_version
@@ -59,7 +59,9 @@ resource "aws_elasticache_replication_group" "default" {
 
   lifecycle {
     ignore_changes = [
-      security_group_names
+      security_group_names,
+      auth_token_update_strategy,
+      notification_topic_arn
     ]
   }
 }
