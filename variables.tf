@@ -36,7 +36,7 @@ variable "engine_version" {
 
 variable "at_rest_encryption_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable encryption at rest"
 }
 
