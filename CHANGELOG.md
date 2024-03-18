@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.0.5](https://github.com/finisterra-io/terraform-aws-elasticache-redis/compare/v1.0.4...v1.0.5) (2024-03-18)
+
+
+### Bug Fixes
+
+* add tfsec ([ac139aa](https://github.com/finisterra-io/terraform-aws-elasticache-redis/commit/ac139aa20bf3672e69ca2f6d56f0a2fcb431b4d8))
+
 ### [1.0.4](https://github.com/finisterra-io/terraform-aws-elasticache-redis/compare/v1.0.3...v1.0.4) (2024-02-16)
 
 
